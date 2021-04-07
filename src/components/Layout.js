@@ -78,10 +78,6 @@ export default function Layout() {
         anchor="left"
       >
         <div className={classes.toolbar} />
-        <Divider />
-        <AddressSearch update={updateValue} />
-        <TravelTime coords={value} update={updateIsoline1} />
-        <TravelDistance coords={value} update={updateIsolineDist1} />
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
