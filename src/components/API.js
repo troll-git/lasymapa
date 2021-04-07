@@ -50,7 +50,7 @@ export function getIsolineDist(coords, distrange, setIsoline) {
   //.then(response=>response.json()).then(data=>setIsoline(data)).then(console.log("lo"))
 }
 
-export function getCompartments() {
+export function getCompartments(bbox, setData) {
   let username = "admin";
   let password = "geoserver";
   let authString = `${username}:${password}`;
@@ -62,9 +62,9 @@ export function getCompartments() {
     request: "getFeature",
     typeNames: "lasy:g_compartment",
     outputFormat: "application/json",
-    bbox: "51.9,19.20,51.95,19.30",
+    bbox: `${bbox._southWest.lat},${bbox._southWest.lng},${bbox._northEast.lat},${bbox._northEast.lng}`,
   });
   fetch(url, { headers: headers })
     .then((response) => response.json())
-    .then((data) => console.log(data));
+    .then((data) => setData(data));
 }
