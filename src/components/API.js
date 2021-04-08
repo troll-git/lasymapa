@@ -68,3 +68,22 @@ export function getCompartments(bbox, setData) {
     .then((response) => response.json())
     .then((data) => setData(data));
 }
+
+export function getCompartmentData(id, setData) {
+  let username = "admin";
+  let password = "geoserver";
+  let authString = `${username}:${password}`;
+  let headers = new Headers();
+  headers.append("Authorization", "Basic " + btoa(authString));
+  let url = new URL("http://159.65.197.227:8080/geoserver/wfs");
+  url.search = new URLSearchParams({
+    service: "wfs",
+    request: "getFeature",
+    typeNames: "lasy:g_compartment",
+    outputFormat: "application/json",
+    featureID: id,
+  });
+  fetch(url, { headers: headers })
+    .then((response) => response.json())
+    .then((data) => setData(data));
+}

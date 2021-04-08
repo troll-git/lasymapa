@@ -13,6 +13,7 @@ import {
   Polygon,
   useMapEvent,
   GeoJSON,
+  Tooltip,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -21,7 +22,7 @@ import { TimelineSeparator } from "@material-ui/lab";
 import L from "leaflet";
 import bbox from "@turf/bbox";
 import { feature, lineString } from "@turf/helpers";
-import { getCompartments } from "./API";
+import { getCompartments, getCompartmentData } from "./API";
 import { red } from "@material-ui/core/colors";
 
 let icon = L.icon({
@@ -43,6 +44,7 @@ function swapBbox(bbox) {
 
 function ShowBbox() {
   const [polygon, setPolygon] = useState(null);
+  const [dataCompartment, setDataCompartment] = useState(null);
   const map = useMapEvent("moveend", () => {
     setPolygon(null);
     let bbox = map.getBounds();
@@ -70,12 +72,29 @@ function ShowBbox() {
       onEachFeature={(feature, layer) => {
         layer.on("mouseover", () => {
           layer.setStyle(highlightStyle());
+          getCompartmentData(feature.id, setDataCompartment);
+          //console.log(dataCompartment);
         });
         layer.on("mouseout", () => {
           layer.setStyle(normalStyle());
         });
       }}
-    />
+    >
+      <Tooltip sticky>
+        {dataCompartment ? (
+          <div>
+            <h1>
+              {dataCompartment.features[0].properties.reg_name +
+                "-" +
+                dataCompartment.features[0].properties.ins_name}
+            </h1>
+            <p>{dataCompartment.features[0].properties.adr_for}</p>
+          </div>
+        ) : (
+          "no data"
+        )}
+      </Tooltip>
+    </GeoJSON>
   ) : (
     <p>{"hujenuje"}</p>
   );
